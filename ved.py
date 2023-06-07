@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-
-# ugly path patching
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(__file__, '..', 'lib')))
-
 import base64
+from sys import stdin
+
+from google.protobuf.message import DecodeError
+
 from proto.ved_pb2 import Ved
 
 '''
@@ -136,8 +134,7 @@ def format_ved(ved):
 
 
 def main():
-    import sys
-    for line in sys.stdin:
+    for line in stdin:
         line = line.strip()
         if not line:
             continue
