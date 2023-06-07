@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 # ugly path patching
 import sys
@@ -71,7 +71,7 @@ LINK_TYPES = {
 def try_decode(s):
     ''' try to base64 decode s. return None, if decoding fails '''
     try:
-        return base64.b64decode(str(s)+'=====', '_-')
+        return base64.b64decode(s.encode('utf8')+b'=====', b'_-')
     except TypeError:
         return None
 
@@ -82,9 +82,8 @@ def decode_ved_plain(s):
     key_mapping = {'i':'index_boost', 't':'type', 'r':'result_position', 's':'start'}
 
     kv_pairs = s.split(',')
-    kv_pairs = map(lambda x: x.split(':'), kv_pairs)
-    kv_pairs = map(lambda (k,v): (key_mapping[k], int(v)), kv_pairs)
-    return dict(kv_pairs)
+    kv_pairs = [x.split(':') for x in kv_pairs]
+    return {key_mapping.get(k, k): int(v) for k, v in kv_pairs}
 
 
 def decode_ved_protobuf(s):
@@ -142,9 +141,9 @@ def main():
         line = line.strip()
         if not line:
             continue
-        print line
-        print format_ved(decode_ved(line))
-        print "---"
+        print(line)
+        print(format_ved(decode_ved(line)))
+        print("---")
 
 if __name__ == '__main__':
     main()
