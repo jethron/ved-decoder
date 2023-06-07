@@ -111,9 +111,11 @@ def decode_ved(s):
     ''' decode a ved '''
     if not s:
         return None
-    if s[0] == '1':
+    elif s.startswith('2'):
+        return decode_ved_protobuf(s[1:])
+    elif s.startswith('1'):
         return decode_ved_plain(s[1:])
-    elif s[0] == '0':
+    elif s.startswith('0'):
         return decode_ved_protobuf(s[1:])
 
 
