@@ -83,6 +83,15 @@ def decode_ved_plain(s):
     kv_pairs = [x.split(':') for x in kv_pairs]
     return {key_mapping.get(k, k): int(v) for k, v in kv_pairs}
 
+def dict_from_proto(message):
+    ret = {}
+    for k, v in message.ListFields():
+        if k.type == k.TYPE_MESSAGE:
+            ret[k.name] = dict_from_proto(v)
+        else:
+            ret[k.name] = v
+
+    return ret
 
 def decode_ved_protobuf(s):
     ''' decode the protobuf variant of the ved parameter. '''
@@ -93,11 +102,7 @@ def decode_ved_protobuf(s):
     ved = Ved()
     try:
         ved.ParseFromString(decoded)
-
-        ret = {}
-        for k, v in ved.ListFields():
-            ret[k.name] = v
-        return ret
+        return dict_from_proto(ved)
     except DecodeError:
         return None
 
@@ -123,12 +128,6 @@ def format_ved(ved):
             ved['type'] = format_type(ved['type'])
         if 'link_type' in ved:
             ved['link_type'] = format_type(ved['link_type'])
-        if 'mysterious_msg' in ved:
-            filth = ""
-            for k, v in ved['mysterious_msg'].ListFields():
-                # ved['mysterious_msg'][k.name] = v
-                filth += str(v).replace("\n", ", ")
-            ved['mysterious_msg'] = filth
 
     return ved
 
