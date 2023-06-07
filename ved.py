@@ -121,7 +121,7 @@ def decode_ved(s):
 
 def format_type(type):
     type_name = LINK_TYPES.get(type, 'unknown')
-    return '%s (%s)' % (type_name, type)
+    return f'{type_name} ({type})'
 
 
 def format_ved(ved):
@@ -139,9 +139,7 @@ def main():
         line = line.strip()
         if not line:
             continue
-        print(line)
-        print(format_ved(decode_ved(line)))
-        print("---")
+        print(line, format_ved(decode_ved(line)))
 
 if __name__ == '__main__':
     main()
