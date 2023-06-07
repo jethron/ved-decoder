@@ -36,7 +36,7 @@ message Ved {
         knowledge_graph_repeated_sub_link = 1732;
         sponsored_shopping_result_thumbnail = 1907;
         sponsored_shopping_result = 1908;
-        sponsored_shopping_result_thumbnail_ = 1986;
+        sponsored_shopping_result_thumbnail_2 = 1986;
         sponsored_shopping_result_main_column_of_universal_search = 1987;
         sitelink = 2060;
         news_result_video_thumbnail = 2237;
@@ -78,7 +78,7 @@ message Ved {
     optional uint64 v10 = 10;
     optional uint64 v11 = 11;
     optional uint64 v12 = 12;
-    
+
     /**
     It seems that the ved structure has changed.
     pos 13 now has nested types
