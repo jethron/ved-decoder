@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import base64
 from sys import stdin
+from typing import Any
 
-from google.protobuf.message import DecodeError
+from google.protobuf.message import DecodeError, Message
 
 from proto.ved_pb2 import Ved
 
@@ -66,7 +67,7 @@ LINK_TYPES = {
 }
 
 
-def try_decode(s):
+def try_decode(s: str) -> bytes | None:
     ''' try to base64 decode s. return None, if decoding fails '''
     try:
         return base64.b64decode(s.encode('utf8')+b'=====', b'_-')
@@ -74,7 +75,7 @@ def try_decode(s):
         return None
 
 
-def decode_ved_plain(s):
+def decode_ved_plain(s: str) -> dict[str, int]:
     ''' decode the plain text varian of the ved parameter. no error checking. '''
 
     key_mapping = {'i':'index_boost', 't':'type', 'r':'result_position', 's':'start'}
@@ -83,7 +84,7 @@ def decode_ved_plain(s):
     kv_pairs = [x.split(':') for x in kv_pairs]
     return {key_mapping.get(k, k): int(v) for k, v in kv_pairs}
 
-def dict_from_proto(message):
+def dict_from_proto(message: Message) -> dict[str, Any]:
     ret = {}
     for k, v in message.ListFields():
         if k.type == k.TYPE_MESSAGE:
@@ -93,7 +94,7 @@ def dict_from_proto(message):
 
     return ret
 
-def decode_ved_protobuf(s):
+def decode_ved_protobuf(s: str) -> dict[str, Any] | None:
     ''' decode the protobuf variant of the ved parameter. '''
 
     decoded = try_decode(s)
@@ -107,7 +108,7 @@ def decode_ved_protobuf(s):
         return None
 
 
-def decode_ved(s):
+def decode_ved(s: str) -> dict[str, Any] | None:
     ''' decode a ved '''
     if not s:
         return None
@@ -119,12 +120,12 @@ def decode_ved(s):
         return decode_ved_protobuf(s[1:])
 
 
-def format_type(type):
+def format_type(type: int) -> str:
     type_name = LINK_TYPES.get(type, 'unknown')
     return f'{type_name} ({type})'
 
 
-def format_ved(ved):
+def format_ved(ved: dict[str, Any] | None) -> dict[str, Any] | None:
     if ved:
         if 'type' in ved:
             ved['type'] = format_type(ved['type'])
